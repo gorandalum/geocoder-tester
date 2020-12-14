@@ -1,55 +1,123 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
-import './App.css';
+import React from "react";
+import { useEffect, useState } from "react";
+import "./App.css";
+import useDebounce from "./useDebounce";
+
+const baseURL = "https://api.dev.entur.io/geocoder/v1/autocomplete?";
+
+const locations = {
+  orkanger: { lat: 63.30611, lon: 9.85082 },
+  prinsensgate: { lat: 63.42908, lon: 10.3926 },
+};
 
 function App() {
-  const [date, setDate] = useState(null);
+  const [text, setText] = useState("Kong");
+  const [size, setSize] = useState(30);
+  const [lat, setLat] = useState(locations.prinsensgate.lat);
+  const [lon, setLon] = useState(locations.prinsensgate.lon);
+  const [weight, setWeight] = useState(15);
+  const [scale, setScale] = useState("50km");
+  const [fun, setFun] = useState("linear");
+  const [features, setFeatures] = useState([]);
+
+  const debouncedText = useDebounce(text, 300);
+
   useEffect(() => {
     async function getDate() {
-      const res = await fetch('/api/date');
-      const newDate = await res.text();
-      setDate(newDate);
+      const res = await fetch(
+        baseURL +
+          new URLSearchParams({
+            text,
+            size,
+            "focus.point.lat": lat,
+            "focus.point.lon": lon,
+            "focus.weight": weight,
+            "focus.scale": scale,
+            "focus.function": fun,
+            debug: true,
+          })
+      );
+      const results = await res.json();
+      setFeatures(results.features);
     }
     getDate();
-  }, []);
+  }, [debouncedText, lat, lon, weight, scale, fun]);
+
   return (
     <main>
-      <h1>Create React App + Go API</h1>
-      <h2>
-        Deployed with{' '}
-        <a
-          href="https://vercel.com/docs"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          Vercel
-        </a>
-        !
-      </h2>
-      <p>
-        <a
-          href="https://github.com/vercel/vercel/tree/master/examples/create-react-app"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          This project
-        </a>{' '}
-        was bootstrapped with{' '}
-        <a href="https://facebook.github.io/create-react-app/">
-          Create React App
-        </a>{' '}
-        and contains three directories, <code>/public</code> for static assets,{' '}
-        <code>/src</code> for components and content, and <code>/api</code>{' '}
-        which contains a serverless <a href="https://golang.org/">Go</a>{' '}
-        function. See{' '}
-        <a href="/api/date">
-          <code>api/date</code> for the Date API with Go
-        </a>
-        .
-      </p>
+      <h1>Geocoder autocomplete tester</h1>
+      <div>
+        <label>Text:</label>
+        <input
+          type="text"
+          value={text}
+          onChange={(ev) => setText(ev.target.value)}
+        ></input>
+      </div>
+      <div>
+        <label>Latitude:</label>
+        <input
+          type="number"
+          value={lat}
+          onChange={(ev) => setLat(ev.target.value)}
+        />
+      </div>
+      <div>
+        <label>Longitude:</label>
+        <input
+          type="number"
+          value={lon}
+          onChange={(ev) => setLon(ev.target.value)}
+        />
+      </div>
+      <div>
+        <label>Focus weight:</label>
+        <input
+          type="number"
+          value={weight}
+          onChange={(ev) => setWeight(ev.target.value)}
+        />
+      </div>
+      <div>
+        <label>Focus scale:</label>
+        <input
+          type="text"
+          value={scale}
+          onChange={(ev) => setScale(ev.target.value)}
+        ></input>
+      </div>
+      <div>
+        <label>Focus function:</label>
+        <select value={fun} onChange={(ev) => setFun(ev.target.value)}>
+          <option>linear</option>
+          <option>exp</option>
+        </select>
+      </div>
       <br />
-      <h2>The date according to Go is:</h2>
-      <p>{date ? date : 'Loading date...'}</p>
+      <h2>Results</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Label</th>
+            <th>Score</th>
+            <th>Distance</th>
+            <th>Popularity</th>
+            <th>Layer</th>
+          </tr>
+        </thead>
+        <tbody>
+          {features &&
+            features.map((f) => (
+              <tr>
+                <td>{f.properties.label}</td>
+                <td>{f.properties._score}</td>
+                <td>{f.properties.distance}</td>
+                <td>{f.properties.popularity}</td>
+                <td>{f.properties.layer}</td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
     </main>
   );
 }
