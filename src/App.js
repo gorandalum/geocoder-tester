@@ -101,6 +101,11 @@ function App() {
         ></input>
       </div>
       <div>
+        {["50km", "200km", "2500km"].map((km) => (
+          <button onClick={() => setScale(km)}>{km}</button>
+        ))}
+      </div>
+      <div>
         <label>Focus function:</label>
         <select value={fun} onChange={(ev) => setFun(ev.target.value)}>
           <option>linear</option>
