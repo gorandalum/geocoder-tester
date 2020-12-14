@@ -8,6 +8,7 @@ const baseURL = "https://api.dev.entur.io/geocoder/v1/autocomplete?";
 const locations = {
   orkanger: { lat: 63.30611, lon: 9.85082 },
   prinsensgate: { lat: 63.42908, lon: 10.3926 },
+  flatåsen: { lat: 63.3762935, lon: 10.3378566 },
 };
 
 function App() {
@@ -21,6 +22,12 @@ function App() {
   const [features, setFeatures] = useState([]);
 
   const debouncedText = useDebounce(text, 300);
+
+  function setLocation(key) {
+    const location = locations[key];
+    setLat(location.lat);
+    setLon(location.lon);
+  }
 
   useEffect(() => {
     async function getDate() {
@@ -69,6 +76,13 @@ function App() {
           value={lon}
           onChange={(ev) => setLon(ev.target.value)}
         />
+      </div>
+      <div>
+        <button onClick={() => setLocation("orkanger")}>Orkanger</button>
+        <button onClick={() => setLocation("prinsensgate")}>
+          Prinsens gate
+        </button>
+        <button onClick={() => setLocation("flatåsen")}>Flatåsen</button>
       </div>
       <div>
         <label>Focus weight:</label>
