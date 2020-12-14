@@ -12,7 +12,7 @@ const locations = {
 
 function App() {
   const [text, setText] = useState("Kong");
-  const [size, setSize] = useState(30);
+  const [size, setSize] = useState(10);
   const [lat, setLat] = useState(locations.prinsensgate.lat);
   const [lon, setLon] = useState(locations.prinsensgate.lon);
   const [weight, setWeight] = useState(15);
@@ -41,7 +41,7 @@ function App() {
       setFeatures(results.features);
     }
     getDate();
-  }, [debouncedText, lat, lon, weight, scale, fun]);
+  }, [debouncedText, lat, lon, weight, scale, fun, size]);
 
   return (
     <main>
@@ -91,6 +91,14 @@ function App() {
         <select value={fun} onChange={(ev) => setFun(ev.target.value)}>
           <option>linear</option>
           <option>exp</option>
+        </select>
+      </div>
+      <div>
+        <label>Page size:</label>
+        <select value={size} onChange={(ev) => setSize(ev.target.value)}>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={30}>30</option>
         </select>
       </div>
       <br />
