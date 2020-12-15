@@ -127,7 +127,7 @@ function App() {
           <tr>
             <th>Label</th>
             <th>Score</th>
-            <th>Distance</th>
+            <th>Distance (km)</th>
             <th>Popularity</th>
             <th>Category</th>
           </tr>
