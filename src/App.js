@@ -129,7 +129,7 @@ function App() {
             <th>Score</th>
             <th>Distance</th>
             <th>Popularity</th>
-            <th>Layer</th>
+            <th>Category</th>
           </tr>
         </thead>
         <tbody>
@@ -140,7 +140,7 @@ function App() {
                 <td>{f.properties._score}</td>
                 <td>{f.properties.distance}</td>
                 <td>{f.properties.popularity}</td>
-                <td>{f.properties.layer}</td>
+                <td>{f.properties.category.join(",")}</td>
               </tr>
             ))}
         </tbody>
