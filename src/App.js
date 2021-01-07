@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import useDebounce from "./useDebounce";
 
-const baseURL = "https://api.dev.entur.io/geocoder/v1/autocomplete?";
+const baseURL = "https://api.staging.entur.io/geocoder/v1/autocomplete?";
 
 const locations = {
   orkanger: { lat: 63.30611, lon: 9.85082 },
